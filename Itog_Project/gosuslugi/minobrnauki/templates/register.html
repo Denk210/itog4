@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="post">
+    <h2>Регистрация</h2>
+    <input type="text" name="login" placeholder="Логин" value="{% if form_data %}{{ form_data.login }}{% endif %}" required>
+    <input type="text" name="last_name" placeholder="Фамилия" value="{% if form_data %}{{ form_data.last_name }}{% endif %}" required>
+    <input type="text" name="first_name" placeholder="Имя" value="{% if form_data %}{{ form_data.first_name }}{% endif %}" required>
+    <input type="text" name="middle_name" placeholder="Отчество" value="{% if form_data %}{{ form_data.middle_name }}{% endif %}" required>
+    <input type="text" name="birth_date" placeholder="ДД.ММ.ГГГГ" value="{% if form_data %}{{ form_data.birth_date }}{% endif %}" required>
+    Пол
+    <select name="gender" required>
+        <option value="male" {% if form_data and form_data.gender == 'male' %}selected{% endif %}>Мужской</option>
+        <option value="female" {% if form_data and form_data.gender == 'female' %}selected{% endif %}>Женский</option>
+    </select>
+    <input type="text" name="passport_series" placeholder="Серия паспорта" value="{% if form_data %}{{ form_data.passport_series }}{% endif %}" pattern="\d{4}" required>
+    <input type="text" name="passport_number" placeholder="Номер паспорта" value="{% if form_data %}{{ form_data.passport_number }}{% endif %}" pattern="\d{6}" required>
+    <input type="text" name="registration_address" placeholder="Адрес регистрации" value="{% if form_data %}{{ form_data.registration_address }}{% endif %}" required>
+    <label><input type="checkbox" name="same_address" id="same_address" {% if form_data and form_data.same_address %}checked{% endif %}>Совпадает с адресом регистрации</label>
+    <input type="text" name="actual_address" id="actual_address" placeholder="Адрес фактического проживания" value="{% if form_data %}{{ form_data.actual_address }}{% endif %}">
+    <input type="email" name="email" placeholder="Email" value="{% if form_data %}{{ form_data.email }}{% endif %}" required>
+    <input type="password" name="password1" placeholder="Пароль" required>
+    <input type="password" name="password2" placeholder="Подтвердите пароль" required>
+    <button type="submit">Зарегистрироваться</button>
+</form>
+
+<script>
+    // JavaScript для обработки чекбокса
+    const sameAddressCheckbox = document.getElementById('same_address');
+    const registrationAddressInput = document.querySelector('input[name="registration_address"]');
+    const actualAddressInput = document.getElementById('actual_address');
+
+    sameAddressCheckbox.addEventListener('change', function () {
+        if (this.checked) {
+            actualAddressInput.value = registrationAddressInput.value;
+            actualAddressInput.disabled = true; // Блокируем поле, чтобы его нельзя было изменить
+        } else {
+            actualAddressInput.value = '';
+            actualAddressInput.disabled = false; // Разблокируем поле
+        }
+    });
+</script>
+{% endblock %}

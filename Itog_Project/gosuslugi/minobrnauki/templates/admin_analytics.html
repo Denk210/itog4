@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Аналитика</h2>
+<div class="profile-menu">
+    <a href="{% url 'profile' %}">Профиль</a> | <a href="{% url 'applications' %}">Заявления</a>
+    {% if user.is_superuser %}
+        | <a href="{% url 'admin_analytics' %}">Аналитика</a>
+    {% endif %}
+</div>
+<div class="analytics-charts">
+    <h3>Зарегистрированные пользователи за последние 7 дней</h3>
+    <img src="data:image/png;base64,{{ user_chart }}" alt="График пользователей">
+
+    <h3>Количество поданных заявлений по типу</h3>
+    <img src="data:image/png;base64,{{ application_chart }}" alt="График заявлений">
+</div>
+
+<style>
+    .analytics-charts {
+        text-align: center;
+        margin: 20px auto;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+{% endblock %}

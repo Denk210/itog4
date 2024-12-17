@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Погода{% endblock %}
+{% block content %}
+{% load static %}
+<h2>Погода в вашем городе</h2>
+
+{% if weather_data %}
+<div class="weather-info">
+    <h3>Город: {{ weather_data.city }}</h3>
+    <p><strong>Температура:</strong> {{ weather_data.temperature }}</p>
+    <p><strong>Описание:</strong> {{ weather_data.description }}</p>
+    <p><strong>Влажность:</strong> {{ weather_data.humidity }}</p>
+    <p><strong>Ветер:</strong> {{ weather_data.wind }}</p>
+</div>
+{% else %}
+<p class="error">{{ error }}</p>
+{% endif %}
+
+<style>
+    .weather-info {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 15px; /* Увеличиваем закругление */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 20px auto; /* Отступы по бокам */
+        max-width: 400px; /* Уменьшаем ширину */
+        text-align: center; /* Выравниваем текст по центру */
+    }
+
+    .weather-info h3 {
+        margin-bottom: 10px;
+        font-size: 24px;
+    }
+
+    .weather-info p {
+        margin: 5px 0;
+        font-size: 18px;
+    }
+
+    .error {
+        color: red;
+        font-size: 18px;
+    }
+</style>
+{% endblock %}

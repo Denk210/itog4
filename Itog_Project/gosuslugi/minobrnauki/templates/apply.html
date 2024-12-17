@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    <h2>Подать заявление</h2>
+
+    <!-- Поля для ввода данных -->
+    <input type="text" name="fio" placeholder="ФИО" value="{{ full_name }}" readonly>
+    <input type="text" name="birth_date" placeholder="Дата рождения" value="{{ birth_date }}" readonly>
+    <input type="text" name="registration_address" placeholder="Адрес регистрации" value="{{ registration_address }}" readonly>
+    <input type="text" name="actual_address" placeholder="Адрес проживания" value="{{ actual_address }}" readonly>
+
+    <!-- Выпадающий список -->
+    <select name="application_type" required>
+        <option value="title">Присвоение ученого звания</option>
+        <option value="duplicate">Получение дубликата</option>
+        <option value="replacement">Замена аттестата</option>
+        <option value="cancellation">Аннулирование звания</option>
+    </select>
+
+    <!-- Поле для загрузки документа об образовании -->
+    <div class="file-upload">
+        <label for="education_document">Прикрепите документ об образовании (PDF)</label>
+        <input type="file" name="education_document" id="education_document" accept=".pdf" required>
+    </div>
+
+    <!-- Поле для загрузки заявления -->
+    <div class="file-upload">
+        <label for="application_document">Прикрепите заявление (PDF)</label>
+        <input type="file" name="application_document" id="application_document" accept=".pdf" required>
+    </div>
+
+    <!-- Поле для загрузки дополнительного документа -->
+    <div class="file-upload">
+        <label for="additional_document">Прикрепите дополнительный документ (PDF, опционально)</label>
+        <input type="file" name="additional_document" id="additional_document" accept=".pdf">
+    </div>
+
+    <!-- Чекбоксы -->
+    <div>
+        <label><input type="checkbox" name="agree_pd" required>Согласен на обработку персональных данных</label> <br>
+        <label><input type="checkbox" name="agree_reg" required>Ознакомлен с административным регламентом</label>
+    </div>
+
+    <!-- Кнопка отправки -->
+    <button type="submit">Отправить</button>
+</form>
+
+<style>
+    .file-upload {
+        padding: 3%;
+        text-align: center;
+    }
+
+    .file-upload label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .file-upload input[type="file"] {
+        width: 100%;
+        max-width: 500px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        height: 21px;
+        padding: 7px;
+    }
+</style>
+{% endblock %}

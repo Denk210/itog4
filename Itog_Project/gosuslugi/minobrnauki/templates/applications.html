@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Заявления</h2>
+<div class="profile-menu">
+    <a href="{% url 'profile' %}">Профиль</a> | <a href="{% url 'applications' %}">Заявления</a>
+    {% if user.is_superuser %}
+        | <a href="{% url 'admin_analytics' %}">Аналитика</a>
+    {% endif %}
+</div>
+<div class="applications-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Номер заявления</th>
+                <th>Тип заявления</th>
+                <th>Дата подачи</th>
+                <th>Документ об образовании</th>
+                <th>Заявление</th>
+                <th>Дополнительный документ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+            <tr>
+                <td>{{ application.id }}</td>
+                <td>{{ application.get_application_type_display }}</td>
+                <td>{{ application.created_at|date:"d.m.Y H:i" }}</td>
+                <td>
+                    <a href="{{ application.education_document.url }}" target="_blank">Посмотреть</a>
+                </td>
+                <td>
+                    <a href="{{ application.application_document.url }}" target="_blank">Посмотреть</a>
+                </td>
+                <td>
+                    {% if application.additional_document %}
+                        <a href="{{ application.additional_document.url }}" target="_blank">Посмотреть</a>
+                    {% else %}
+                        Нет
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .applications-table {
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    table {
+        width: 100%;
+        max-width: 800px;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    a {
+        color: #0078d7;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

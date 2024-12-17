@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Госуслуги{% endblock %}</title>
+    <style>
+        /* Общие стили */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            text-align: justify;
+        }
+
+        /* Заголовки */
+        h1, h2 {
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        p {
+            padding: 0 25px;
+        }
+
+        /* Шапка */
+        header {
+            background-color: white;
+            color: #0078d7;
+            padding: 10px 17px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #0078d7;
+        }
+
+        header img {
+            height: 50px;
+        }
+
+        header a {
+            color: #0078d7;
+            text-decoration: none;
+            margin-left: 20px;
+            transition: color 0.5s, text-decoration 0.5s;
+        }
+
+        header a:hover {
+            color: black;
+            text-decoration: underline;
+        }
+
+        .login-button {
+            border: 1px solid #0078d7;
+            background-color: #0078d7;
+            color: white;
+            padding: 11px 16px;
+            border-radius: 7px;
+            transition: background-color 0.5s, color 0.5s;
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
+        .login-button:hover {
+            background-color: white;
+            color: black;
+        }
+
+        /* Подвал */
+        footer {
+            background-color: #f0f0f0;
+            color: #0078d7;
+            padding: 20px 0;
+            margin-top: auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        footer nav {
+            margin-top: 10px;
+        }
+
+        footer a {
+            color: #0078d7;
+            text-decoration: none;
+            display: block;
+            margin: 5px 0;
+            transition: color 0.5s, text-decoration 0.5s;
+        }
+
+        footer a:hover {
+            color: black;
+            text-decoration: underline;
+        }
+
+        /* Иконки соцсетей */
+        .social-icons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .social-icons a {
+            margin: 0 10px;
+            opacity: 0.5;
+            transition: opacity 0.5s;
+        }
+
+        .social-icons a:hover {
+            opacity: 1;
+        }
+
+        .social-icons img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Карусель */
+        .carousel {
+            padding: 0;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+        }
+
+        .carousel img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            display: none;
+        }
+
+        .carousel img.active {
+            display: block;
+        }
+
+        /* Кнопки для карусели */
+        .carousel-buttons {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-buttons button {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.5s;
+            border-radius: 40%;
+        }
+
+        .carousel-buttons button:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Карта */
+        .map {
+            width: 700px;
+            height: 400px;
+            margin: 20px auto;
+        }
+
+        .map iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Дополнительный текст */
+        .additional-text {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #0078d7;
+            padding: 0 20px;
+        }
+
+        .contact-info {
+            padding: 25px;
+            margin-right: -25px;
+        }
+
+
+        /* Стили для формы авторизации */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #0078d7;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            max-width: 400px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Общие стили для всех полей */
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        /* Стили для поля email */
+        input[type="email"] {
+            background-color: #f9f9f9;
+            border: 1px solid #0078d7;
+        }
+
+        /* Стили для поля пароля */
+        input[type="password"] {
+            background-color: #f0f8ff;
+            border: 1px solid #0078d7;
+        }
+
+        /* Стили для поля текста */
+        input[type="text"] {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #0078d7;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #005bb5;
+        }
+
+        a {
+            color: #0078d7;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #005bb5;
+            text-decoration: underline;
+        }
+
+        .messages {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .messages .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .profile-menu {
+            margin-bottom: 20px;
+            padding: 0 25px;
+        }
+
+        .profile-info {
+            margin-left: 25px;
+        }
+
+        /* Стили для выпадающего меню */
+        .user-menu {
+            position: relative;
+            display: inline-block;
+            margin-left: 20px;
+        }
+
+        .user-menu .user-initials {
+            border: 1px solid #0078d7;
+            background-color: #0078d7;
+            color: white;
+            padding: 11px 16px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        .user-menu .user-initials:hover {
+            background-color: white;
+            color: black;
+        }
+
+        .user-menu .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            display: none;
+        }
+
+        .user-menu .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .user-menu .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .user-menu:hover .dropdown-content {
+            display: block;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userMenu = document.querySelector('.user-menu');
+            const dropdownContent = document.querySelector('.user-menu .dropdown-content');
+
+            // Функция для корректировки позиции выпадающего списка
+            function adjustDropdownPosition() {
+                if (!dropdownContent || dropdownContent.style.display === 'none') return;
+
+                const rect = dropdownContent.getBoundingClientRect();
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+
+                // Проверяем, выходит ли выпадающий список за правую границу окна
+                if (rect.right > windowWidth) {
+                    dropdownContent.style.right = '0';
+                    dropdownContent.style.left = 'auto';
+                } else {
+                    dropdownContent.style.right = '0';
+                    dropdownContent.style.left = ''; // Сбрасываем стиль, если не нужно корректировать
+                }
+
+                // Проверяем, выходит ли выпадающий список за нижнюю границу окна
+                if (rect.bottom > windowHeight) {
+                    dropdownContent.style.top = 'auto';
+                    dropdownContent.style.bottom = '100%'; // Помещаем выпадающий список вверх
+                } else {
+                    dropdownContent.style.top = '100%'; // Помещаем выпадающий список вниз
+                    dropdownContent.style.bottom = 'auto';
+                }
+            }
+
+            // Показываем выпадающий список при наведении
+            userMenu.addEventListener('mouseenter', function() {
+                if (dropdownContent) {
+                    dropdownContent.style.display = 'block';
+
+                    // Используем requestAnimationFrame для корректировки позиции
+                    requestAnimationFrame(adjustDropdownPosition);
+                }
+            });
+
+            // Скрываем выпадающий список при уходе курсора
+            userMenu.addEventListener('mouseleave', function() {
+                if (dropdownContent) {
+                    dropdownContent.style.display = 'none';
+                }
+            });
+
+            // Корректируем позицию при изменении размера окна
+            window.addEventListener('resize', adjustDropdownPosition);
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <div>
+            <img src="{% static 'images/logo_gosuslugi.jpg' %}" alt="Лого Госуслуги">
+            <img src="{% static 'images/logo_minobr.jpeg' %}" alt="Лого Минобрнауки">
+        </div>
+        <nav>
+            <a href="{% url 'home' %}">Главная</a>
+            <a href="{% url 'about' %}">О министерстве</a>
+            <a href="{% url 'regulations' %}">Административный регламент</a>
+            <a href="{% url 'contacts' %}">Контакты</a>
+            <a href="{% url 'weather' %}">Погода</a>
+            {% if user.is_authenticated %}
+                <div class="user-menu">
+                    <div class="user-initials">{{ user.last_name }} {{ user.first_name|first }}.</div>
+                    <div class="dropdown-content">
+                        <a href="{% url 'profile' %}">Личный кабинет</a>
+                        <a href="{% url 'submit_application' %}">Подать заявление</a>
+                        <a href="{% url 'logout' %}">Выйти</a>
+                    </div>
+                </div>
+            {% else %}
+                <button class="login-button" onclick="window.location.href='{% url 'login' %}'">Войти</button>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </main>
+    <footer>
+        <nav>
+            <a href="{% if user.is_authenticated %}{% url 'profile' %}{% else %}{% url 'login' %}{% endif %}">Личный кабинет</a>
+            <a href="{% url 'about' %}">О министерстве</a>
+            <a href="{% url 'regulations' %}">Административный регламент</a>
+            <a href="{% url 'contacts' %}">Контакты</a>
+            <a href="{% url 'weather' %}">Погода</a>
+        </nav>
+        <div class="social-icons">
+            <a href="https://t.me/gosuslugi" target="_blank">
+                <img src="{% static 'images/tg.jpg' %}" alt="Telegram">
+            </a>
+            <a href="https://vk.com/gosuslugi" target="_blank">
+                <img src="{% static 'images/vk.png' %}" alt="VK">
+            </a>
+            <a href="https://rutube.ru/u/gosuslugi/" target="_blank">
+                <img src="{% static 'images/rutub.jpg' %}" alt="Rutube">
+            </a>
+        </div>
+        <br> <p>© 2024 Министерство науки и высшего образования Российской Федерации при поддержке Госуслуг</p>
+    </footer>
+
+    <script>
+        const carousel = document.querySelector('.carousel');
+        const images = carousel.querySelectorAll('img');
+        let currentIndex = 0;
+
+        function showImage(index) {
+            images.forEach((img, i) => {
+                img.classList.toggle('active', i === index);
+            });
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            showImage(currentIndex);
+        }
+
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(currentIndex);
+        }
+
+        // Кнопки для карусели
+        const carouselButtons = document.createElement('div');
+        carouselButtons.className = 'carousel-buttons';
+        carouselButtons.innerHTML = `
+            <button onclick="prevImage()">❮</button>
+            <button onclick="nextImage()">❯</button>
+        `;
+        carousel.appendChild(carouselButtons);
+
+        // Показываем первое изображение
+        showImage(currentIndex);
+
+        // Автоматическое переключение изображений каждые 5 секунд
+        setInterval(nextImage, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>Административный регламент</h2>
+
+<!-- Выпадающий список с номерами регламентов -->
+<label for="regulations-select" class="contact-info">Выберите номер регламента:</label>
+<select id="regulations-select" onchange="loadRegulation(this)">
+    <option value="">-- Выберите регламент --</option>
+    <option value="268">268</option>
+    <option value="746">746</option>
+</select>
+
+<!-- Кнопка для подачи заявления -->
+{% if user.is_authenticated %}
+    <button class="login-button" onclick="window.location.href='{% url 'submit_application' %}'">Подать заявление</button>
+    <!-- Ссылка на шаблон -->
+    <p>
+        Перед подачей заявления скачайте необходимый шаблон по ссылке:
+        <a href="{% static 'documents/Шаблоны.pdf' %}" target="_blank">Скачать шаблон</a>
+    </p>
+{% else %}
+    <p class="error">Заявление могут подать только авторизованные пользователи.</p>
+{% endif %}
+
+<!-- Контейнер для отображения PDF -->
+<div id="pdf-viewer" style="display: none;">
+    <div class="pdf-controls">
+        <button id="prev-page" onclick="prevPage()">Назад</button>
+        <span id="page-info"></span>
+        <button id="next-page" onclick="nextPage()">Вперёд</button>
+    </div>
+    <canvas id="pdf-canvas"></canvas>
+</div>
+
+
+<!-- Подключение PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+    let pdfDoc = null;
+    let pageNum = 1;
+    let pageRendering = false;
+    let pageNumPending = null;
+
+    // Функция для загрузки PDF
+    async function loadRegulation(select) {
+        if (select.value) {
+            const pdfUrl = `/static/documents/${select.value}.pdf`; // Путь к PDF-файлу
+            const loadingTask = pdfjsLib.getDocument(pdfUrl);
+            pdfDoc = await loadingTask.promise;
+            pageNum = 1;
+            renderPage(pageNum);
+            document.getElementById('pdf-viewer').style.display = 'block'; // Показываем PDF-контейнер
+        } else {
+            document.getElementById('pdf-viewer').style.display = 'none'; // Скрываем PDF-контейнер
+        }
+    }
+
+    // Функция для отображения страницы
+    async function renderPage(num) {
+        pageRendering = true;
+        const page = await pdfDoc.getPage(num);
+        const viewport = page.getViewport({ scale: 1.5 }); // Масштабирование
+        const canvas = document.getElementById('pdf-canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        const renderContext = {
+            canvasContext: canvas.getContext('2d'),
+            viewport: viewport
+        };
+        await page.render(renderContext);
+        pageRendering = false;
+        updatePageInfo();
+    }
+
+    // Функция для листания назад
+    function prevPage() {
+        if (pageNum <= 1) return;
+        pageNum--;
+        if (pageRendering) {
+            pageNumPending = pageNum;
+        } else {
+            renderPage(pageNum);
+        }
+    }
+
+    // Функция для листания вперёд
+    function nextPage() {
+        if (pageNum >= pdfDoc.numPages) return;
+        pageNum++;
+        if (pageRendering) {
+            pageNumPending = pageNum;
+        } else {
+            renderPage(pageNum);
+        }
+    }
+
+    // Функция для обновления информации о странице
+    function updatePageInfo() {
+        document.getElementById('page-info').textContent = `${pageNum} из ${pdfDoc.numPages}`;
+    }
+</script>
+
+<!-- Стили для PDF-контейнера -->
+<style>
+    #pdf-viewer {
+        display: none;
+        margin: 20px auto;
+        text-align: center;
+    }
+
+    .pdf-controls {
+        margin: 10px 0;
+    }
+
+    .pdf-controls button {
+        padding: 5px 10px;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+    #pdf-canvas {
+        border: 1px solid #ccc;
+        width: 100%;
+        height: auto;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}

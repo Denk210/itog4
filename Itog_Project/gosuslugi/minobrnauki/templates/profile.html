@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Личный кабинет</h2>
+<div class="profile-menu">
+    <a href="{% url 'profile' %}">Профиль</a> | <a href="{% url 'applications' %}">Заявления</a>
+    {% if user.is_superuser %}
+        | <a href="{% url 'admin_analytics' %}">Аналитика</a>
+    {% endif %}
+</div>
+<div class="profile-info">
+    <h3>Профиль</h3>
+    <p>Имя: {{ user.first_name }}</p>
+    <p>Фамилия: {{ user.last_name }}</p>
+    <p>Отчество: {{ profile.middle_name }}</p>
+    <p>Дата рождения: {{ profile.birth_date }}</p>
+    <p>Адрес регистрации: {{ profile.registration_address }}</p>
+    <p>Адрес проживания: {{ profile.actual_address }}</p>
+    <p>Серия паспорта: {{ profile.passport_series }}</p>
+    <p>Номер паспорта: {{ profile.passport_number }}</p>
+    <p>Email: {{ user.email }}</p>
+</div>
+{% endblock %}
